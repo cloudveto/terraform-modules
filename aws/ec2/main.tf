@@ -10,16 +10,36 @@ resource "aws_instance" "ec2" {
   monitoring             = true
   # delete_on_termination  = false
 
-  root_block_device {
-    volume_type           = "gp2"
-    volume_size           = "50"
-    delete_on_termination = "true"
-    encrypted             = true
-    kms_key_id            = var.kms_key_id
+  dynamic "root_block_device" {
+    for_each = var.root_block_device
+    content {
+      delete_on_termination = lookup(root_block_device.value, "delete_on_termination", null)
+      encrypted             = lookup(root_block_device.value, "encrypted", null)
+      iops                  = lookup(root_block_device.value, "iops", null)
+      kms_key_id            = lookup(root_block_device.value, "kms_key_id", null)
+      volume_size           = lookup(root_block_device.value, "volume_size", null)
+      volume_type           = lookup(root_block_device.value, "volume_type", null)
+      throughput            = lookup(root_block_device.value, "throughput", null)
+      tags                  = merge(var.tags,{Name = var.name },)
+    }
   }
-
+  dynamic "ebs_block_device" {
+    for_each = var.ebs_block_device
+    content {
+      delete_on_termination = lookup(ebs_block_device.value, "delete_on_termination", null)
+      device_name           = ebs_block_device.value.device_name
+      encrypted             = lookup(ebs_block_device.value, "encrypted", null)
+      iops                  = lookup(ebs_block_device.value, "iops", null)
+      kms_key_id            = lookup(ebs_block_device.value, "kms_key_id", null)
+      snapshot_id           = lookup(ebs_block_device.value, "snapshot_id", null)
+      volume_size           = lookup(ebs_block_device.value, "volume_size", null)
+      volume_type           = lookup(ebs_block_device.value, "volume_type", null)
+      throughput            = lookup(ebs_block_device.value, "throughput", null)
+      tags                  = merge(var.tags,{Name = var.name},)
+    }
+  }
   tags = merge(
-    tomap({ "Name" = var.name, "Environment" = var.environment, "Application" = var. application})
+  tomap({ "Name" = var.name,"Environment" = var.environment,"Application" = var.application  })
   )
 }
 

@@ -1,28 +1,53 @@
-Example
+### Example to start and stop ec2 instances.
 ```
-module "cw_events_target_start" {
-  source    = "../../../modules/cloudwatch_event_target"
-  arn       = module.start_instance.lambda_arn
-  target_id = "StartInstance"
-  rule      = module.cw_events_rule_start.name
+######### start_instance #########
+module "start_instance" {
+  source             = "github.com/cloudveto/terraform-modules/aws/lambda/lambda_function"
+  environment        = var.environment
+  filename           = "lambda_start_instance_file"
+  function_name      = "start_instance-${var.environment}"
+  handler            = "lambda_function.lambda_handler"
+  lambda_description = "start instance"
+  lambda_memory_size = "128"
+  lambda_path        = "${path.module}/files/lambda_function_start"
+  lambda_publish     = "true"
+  lambda_role        = "module.role.role_arn"
+  lambda_runtime     = "python3.8"
+  lambda_timeout     = "3"
+  security_group_ids = [module.sg.sg_id]
+  subnet_ids         = [module.vpc_id.subnet_pri_1a_id,module.vpc_id.subnet_pri_1b_id]
 }
-module "cw_events_rule_start" {
-  source              = "../../../modules/cloudwatch_event_rule"
-  description         = "start instance daily at 9 am IST"
-  name                = "start_instance"
-  schedule_expression = "cron(30 3 ? * MON-FRI *)"
+module "start_instance_permission_cwevents" {
+  source               = "github.com/cloudveto/terraform-modules/aws/lambda/lambda_permission"
+  action               = "lambda:InvokeFunction"
+  lambda_function_name = module.start_instance.lambda_funtion_name
+  principal            = "events.amazonaws.com"
+  source_arn           = module.cw_events_rule_start.arn
+  statement_id         = "AllowExecutionFromCloudWatchEvents"
 }
-###################  cw_events_stop   ###############
-module "cw_events_target_stop" {
-  source    = "../../../modules/cloudwatch_event_target"
-  arn       = module.stop_instance.lambda_arn
-  target_id = "StopInstance"
-  rule      = module.cw_events_rule_stop.name
+######### stop_instance #########
+module "stop_instance" {
+  source             = "github.com/cloudveto/terraform-modules/aws/lambda/lambda_function"
+  environment        = var.environment
+  filename           = "lambda_stop_instance_file"
+  function_name      = "stop_instance-${var.environment}"
+  handler            = "lambda_function.lambda_handler"
+  lambda_description = "stop instance"
+  lambda_memory_size = "128"
+  lambda_path        = "${path.module}/files/lambda_function_stop"
+  lambda_publish     = "true"
+  lambda_role        = "module.role.role_arn"
+  lambda_runtime     = "python3.8"
+  lambda_timeout     = "3"
+  security_group_ids = [module.sg.sg_id]
+  subnet_ids         = [module.vpc_id.subnet_pri_1a_id,module.vpc_id.subnet_pri_1b_id]
 }
-module "cw_events_rule_stop" {
-  source              = "../../../modules/cloudwatch_event_rule"
-  description         = "stop instance daily at  7pm IST"
-  name                = "stop_instance"
-  schedule_expression = "cron(30 13 ? * MON-FRI *)"
+module "stop_instance_permission_cwevents" {
+  source               = "github.com/cloudveto/terraform-modules/aws/lambda/lambda_permission"
+  action               = "lambda:InvokeFunction"
+  lambda_function_name = module.stop_instance.lambda_funtion_name
+  principal            = "events.amazonaws.com"
+  source_arn           = module.cw_events_rule_stop.arn
+  statement_id         = "AllowExecutionFromCloudWatchEvents"
 }
 ```
