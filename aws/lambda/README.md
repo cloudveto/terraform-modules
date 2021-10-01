@@ -1,6 +1,6 @@
 ### Example to start and stop ec2 instances.
 ```
-######### start_instance #########
+######### Start Instances #########
 module "start_instance" {
   source             = "github.com/cloudveto/terraform-modules/aws/lambda/lambda_function"
   environment        = var.environment
@@ -25,7 +25,7 @@ module "start_instance_permission_cwevents" {
   source_arn           = module.cw_events_rule_start.arn
   statement_id         = "AllowExecutionFromCloudWatchEvents"
 }
-######### stop_instance #########
+######### Stop Instances #########
 module "stop_instance" {
   source             = "github.com/cloudveto/terraform-modules/aws/lambda/lambda_function"
   environment        = var.environment

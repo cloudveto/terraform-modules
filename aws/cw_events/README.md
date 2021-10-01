@@ -1,4 +1,5 @@
 ### Example
+###################  Cloud Watch events START ec2  ###############
 ```
 module "cw_events_target_start" {
   source    = "github.com/cloudveto/terraform-modules/aws/cw_events/cloudwatch_event_target"
@@ -12,7 +13,7 @@ module "cw_events_rule_start" {
   name                = "start_instance"
   schedule_expression = "cron(30 3 ? * MON-FRI *)"
 }
-###################  cw_events_stop   ###############
+###################  Cloud Watch events STOP ec2  ###############
 module "cw_events_target_stop" {
   source    = "github.com/cloudveto/terraform-modules/aws/cw_events/cloudwatch_event_target"
   arn       = module.stop_instance.lambda_arn
@@ -28,7 +29,7 @@ module "cw_events_rule_stop" {
 ```
 ### File to be created under path.
 To start ec2
-files\lambda_function_start\lambda_function.py
+files/lambda_function_start/lambda_function.py
 ```
 import boto3
 region = 'ap-south-1'
@@ -40,7 +41,7 @@ def lambda_handler(event, context):
     print('started your instances: ' + str(instances))
 ```
 To stop ec2
-files\lambda_function_stop\lambda_function.py
+files/lambda_function_stop/lambda_function.py
 ```
 import boto3
 region = 'ap-south-1'
