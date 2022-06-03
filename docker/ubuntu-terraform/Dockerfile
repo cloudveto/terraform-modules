@@ -4,7 +4,6 @@ RUN apt-get update && \
 RUN apt-get install -y locales jq git wget curl ansible unzip python-is-python3 python3-venv && \
     rm -rf /var/lib/apt/lists/* && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    curl -L https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh | bash && \
     curl -sL https://istio.io/downloadIstioctl | sh - && \
     echo "PATH=$PATH:$HOME/.istioctl/bin" >> $HOME/.bashrc && \
     echo "PATH=$PATH:/root/.istioctl/bin" >> $HOME/.bashrc && \
@@ -21,3 +20,9 @@ RUN apt-get install -y apt-transport-https ca-certificates && \
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list && \
     apt-get update && \
     apt-get install -y kubectl
+RUN cd /root && \
+    mkdir /root/bin && \
+    mkdir .tfenv && \
+    git clone https://github.com/tfutils/tfenv.git .tfenv && \
+    echo 'export PATH="/root/.tfenv/bin:$PATH"' >> .bashrc && \
+    ln -s .tfenv/bin/* /root/bin
