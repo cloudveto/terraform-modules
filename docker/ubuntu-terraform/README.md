@@ -9,7 +9,7 @@ docker pull ubuntuk8s/ubuntu-terraform:latest
 ### How to use terraform?
 ### Run tfswich <Version> just before terraform init.
 ```
-tfswitch 0.15.2
+export PATH=$PATH:/root/.tfenv/bin
 terraform init
 ```
 ### How to use istio?
