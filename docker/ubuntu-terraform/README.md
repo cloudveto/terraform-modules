@@ -10,6 +10,8 @@ docker pull ubuntuk8s/ubuntu-terraform:latest
 ### Run tfswich <Version> just before terraform init.
 ```
 export PATH=$PATH:/root/.tfenv/bin
+tfenv install 0.15.2
+tfenv use 0.15.2  
 terraform init
 ```
 ### How to use istio?
