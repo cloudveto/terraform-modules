@@ -26,3 +26,7 @@ RUN cd /root && \
     git clone https://github.com/tfutils/tfenv.git .tfenv && \
     echo 'export PATH="/root/.tfenv/bin:$PATH"' >> .bashrc && \
     ln -s .tfenv/bin/* /root/bin
+RUN cd /usr/local/bin && \
+    wget https://github.com/plumber-cd/terraform-backend-git/releases/download/v0.1.2/terraform-backend-git-linux-amd64 && \
+    chmod 777 terraform-backend-git-linux-amd64 && \
+    mv terraform-backend-git-linux-amd64 terraform-backend-git
